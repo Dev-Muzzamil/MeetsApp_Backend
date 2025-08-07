@@ -16,6 +16,4 @@ const eventSchema = new mongoose.Schema({
   volunteer: { type: String, default: null },
 });
 
-const Events = mongoose.model('Events', eventSchema);
-
-export default Events;
+module.exports = mongoose.model('Event', eventSchema);

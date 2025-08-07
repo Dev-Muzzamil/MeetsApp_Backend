@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+/
 const institutionSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: String,
@@ -9,6 +10,4 @@ const institutionSchema = new mongoose.Schema({
   description: String,
 });
 
-const Institutions = mongoose.model('Institutions', institutionSchema);
-
-export default Institutions;
+module.exports = mongoose.model('Institution', institutionSchema);

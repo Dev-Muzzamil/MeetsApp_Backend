@@ -17,4 +17,4 @@ router.post('/:id/events', eventController.createInstitutionEvent);
 // Get single event detail
 router.get('/:id/events/:eventId', eventController.getInstitutionEventDetail);
 
-export default router;
+module.exports = router;

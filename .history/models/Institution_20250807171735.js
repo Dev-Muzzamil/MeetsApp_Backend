@@ -9,6 +9,4 @@ const institutionSchema = new mongoose.Schema({
   description: String,
 });
 
-const Institutions = mongoose.model('Institutions', institutionSchema);
-
-export default Institutions;
+module.exports = mongoose.model('Institution', institutionSchema);
