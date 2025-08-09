@@ -1,10 +1,9 @@
 require('dotenv').config();
 import connectDB from './config/db.js';
-import mongoose from 'mongoose';
-import Institution from './models/Institution';
-import Event from './models/Events';
-import InstitutionRoutes from './routes/institution.js';
-import authRoutes from './routes/auth.js';
+const mongoose = require('mongoose');
+const Institution = require('./models/Institution');
+const Event = require('./models/Events');
+const InstitutionRoutes=require('./routes/institution.js')
 
 connectDB();
 
@@ -16,7 +15,7 @@ app.use(cors({
     credentials: true
   }));
 
-app.use('/auth', authRoutes);
+app.use('/auth')
 
 app.use('/instituitions', InstitutionRoutes);
 

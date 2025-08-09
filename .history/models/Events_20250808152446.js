@@ -14,7 +14,6 @@ const eventSchema = new mongoose.Schema({
   institution: { type: mongoose.Schema.Types.ObjectId, ref: 'Institutions' },
   status: { type: String, enum: ['pending', 'confirmed', 'completed'], default: 'pending' },
   volunteer: { type: String, default: null },
-  sme: { type: mongoose.Schema.Types.ObjectId, ref: 'Sme', default: null },
 });
 
 const Events = mongoose.model('Events', eventSchema);

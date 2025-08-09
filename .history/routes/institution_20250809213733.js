@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const institutionController = require('../controllers/institutionController');
 const eventController = require('../controllers/eventController');
-
-
 router.get('/', institutionController.getAllInstitutions);
 
 // Get institution profile

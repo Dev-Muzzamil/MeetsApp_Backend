@@ -1,6 +1,5 @@
 require('dotenv').config();
-import connectDB from './config/db.js';
-import mongoose from 'mongoose';
+import connectDB from './config/db.js';import mongoose from 'mongoose';
 import Institution from './models/Institution';
 import Event from './models/Events';
 import InstitutionRoutes from './routes/institution.js';

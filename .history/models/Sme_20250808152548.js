@@ -7,8 +7,9 @@ const smeSchema = new mongoose.Schema({
   password:{type:String, required: true},
   expertise: [{ type: String, required: true }],
   qualifications:[{ type: String, required: true }],
-  institute: { type: mongoose.Schema.Types.ObjectId, ref: 'Institutions' },
-})
+  institute: { type: mongoose.Schema.Types.ObjectId, ref: 'Institutions', required: true },
+});
+
 const Sme = mongoose.model('Sme', smeSchema);
 
 export default Sme;
