@@ -21,7 +21,7 @@ app.use(cors({
   }));
 
 app.use('/auth', authRoutes);
-app.use('/sme',smeRoutes)
+app.use('/sme',)
 app.use('/instituitions', InstitutionRoutes);
 
 app.use((err, req, res, next) => {

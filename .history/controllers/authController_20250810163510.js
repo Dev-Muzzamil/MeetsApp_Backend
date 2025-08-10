@@ -9,6 +9,16 @@ const generateToken = (id, role) => {
   });
 };
 
+
+export const instituteLogin=async(req,res)=>{
+    try{
+        // const {}
+    }
+    catch{
+
+    }
+}
+
 export const instituteRegister = async (req, res) => {
   const { name, email, password, location, type, description, coordinates } = req.body;
 

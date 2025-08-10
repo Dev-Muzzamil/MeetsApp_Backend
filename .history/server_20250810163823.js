@@ -1,6 +1,4 @@
 require('dotenv').config();
-import express from 'express';
-import cors from 'cors';
 import connectDB from './config/db.js';
 import mongoose from 'mongoose';
 import Institution from './models/Institution';
@@ -8,7 +6,6 @@ import Event from './models/Events';
 import InstitutionRoutes from './routes/institution.js';
 import authRoutes from './routes/auth.js';
 import smeRoutes from './routes/sme.js';
-
 
 connectDB();
 
@@ -21,7 +18,7 @@ app.use(cors({
   }));
 
 app.use('/auth', authRoutes);
-app.use('/sme',smeRoutes)
+app.use('/sme',)
 app.use('/instituitions', InstitutionRoutes);
 
 app.use((err, req, res, next) => {

@@ -9,6 +9,16 @@ const generateToken = (id, role) => {
   });
 };
 
+
+export const instituteLogin=async(req,res)=>{
+    try{
+        // const {}
+    }
+    catch{
+
+    }
+}
+
 export const instituteRegister = async (req, res) => {
   const { name, email, password, location, type, description, coordinates } = req.body;
 
@@ -80,29 +90,7 @@ export const smeRegister = async (req, res) => {
   }
 }
 
-export const instituteLogin = async (req, res) => {
-  const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Please fill all required fields' });
-  }
-
-  try {
-    const institution = await Institution.findOne({ email });
-    if (!institution || !(await bcrypt.compare(password, institution.password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    res.json({
-      _id: institution._id,
-      name: institution.name,
-      email: institution.email,
-      token: generateToken(institution._id, 'institution')
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
 
 export const smeLogin = async (req, res) => {
   const { email, password } = req.body;
