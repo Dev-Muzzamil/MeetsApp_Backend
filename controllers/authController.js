@@ -1,7 +1,8 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import Institution from '../models/Institution.js';
-import Sme from '../models/Sme.js';
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const Institution = require('../models/Institution.js');
+const Sme = require('../models/Sme');
+const Institutions = require('../models/Institution.js');
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, {
@@ -9,17 +10,15 @@ const generateToken = (id, role) => {
   });
 };
 
+const instituteLogin = async (req, res) => {
+  try {
+    // TODO: Implement login logic
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-export const instituteLogin=async(req,res)=>{
-    try{
-        // const {}
-    }
-    catch{
-
-    }
-}
-
-export const instituteRegister = async (req, res) => {
+const instituteRegister = async (req, res) => {
   const { name, email, password, location, type, description, coordinates } = req.body;
 
   if (!name || !email || !password || !coordinates) {
@@ -27,12 +26,12 @@ export const instituteRegister = async (req, res) => {
   }
 
   try {
-    const existingInstitution = await Institution.findOne({ email });
+    const existingInstitution = await Institutions.findOne({ email });
     if (existingInstitution) {
       return res.status(400).json({ message: 'Institution already exists' });
     }
 
-    const institution = new Institution({
+    const institution = new Institutions({
       name,
       email,
       password: bcrypt.hashSync(password, 10),
@@ -53,9 +52,9 @@ export const instituteRegister = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const smeRegister = async (req, res) => {
+const smeRegister = async (req, res) => {
   const { name, email, password, expertise, qualifications, institute } = req.body;
 
   if (!name || !email || !password || !expertise || !qualifications) {
@@ -88,9 +87,9 @@ export const smeRegister = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-export const smeLogin = async (req, res) => {
+const smeLogin = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -112,4 +111,11 @@ export const smeLogin = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
+
+module.exports = {
+  instituteLogin,
+  instituteRegister,
+  smeRegister,
+  smeLogin
+};

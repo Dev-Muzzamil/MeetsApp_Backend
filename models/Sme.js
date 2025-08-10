@@ -10,5 +10,5 @@ const smeSchema = new mongoose.Schema({
   institute: { type: mongoose.Schema.Types.ObjectId, ref: 'Institutions' },
 })
 const Sme = mongoose.model('Sme', smeSchema);
-
-export default Sme;
+module.exports = Sme;
+// export default Sme;

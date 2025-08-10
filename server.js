@@ -1,14 +1,23 @@
 require('dotenv').config();
-import connectDB from './config/db.js';
-import mongoose from 'mongoose';
-import Institution from './models/Institution';
-import Event from './models/Events';
-import InstitutionRoutes from './routes/institution.js';
-import authRoutes from './routes/auth.js';
-
+// import connectDB from './config/db.js';
+let connectDB =require("./config/db.js");
+const express=require("express");
+// import mongoose from 'mongoose';
+let mongoose=require("mongoose");
+// import Institution from './models/Institution';
+let Institution=require("./models/Institution");
+// import Event from './models/Events';
+let Event = require("./models/Events");
+// import InstitutionRoutes from './routes/institution.js';
+let InstitutionRoutes = require("./routes/institution.js");
+// import authRoutes from './routes/auth.js';
+let authRoutes = require("./routes/auth.js");
+let dotenv = require('dotenv');
+let cors=require("cors");
+const app = express();
+dotenv.config();
 connectDB();
 
-const app = express();
 
 // Middleware
 app.use(cors({
@@ -28,8 +37,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = 5000;
+// const PORT = 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on port ${process.env.PORT}`);
 });
