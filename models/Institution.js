@@ -15,5 +15,5 @@ const institutionSchema = new mongoose.Schema({
 });
 
 const Institutions = mongoose.model('Institutions', institutionSchema);
-
-export default Institutions;
+module.exports = Institutions;
+// export default Institutions;
