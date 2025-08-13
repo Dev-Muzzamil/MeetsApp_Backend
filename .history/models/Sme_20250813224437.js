@@ -8,7 +8,7 @@ const smeSchema = new mongoose.Schema({
   expertise: [{ type: String, required: true }],
   qualifications:[{ type: String, required: true }],
   institute: { type: mongoose.Schema.Types.ObjectId, ref: 'Institutions' },
-  createdAt: { type: Date, default: Date.now }
+  sme
 })
 const Sme = mongoose.model('Sme', smeSchema);
 

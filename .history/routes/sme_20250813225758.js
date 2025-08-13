@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerEvent } from '../controllers/smeController.js';
+import {}
 
 const router = express.Router();
 
