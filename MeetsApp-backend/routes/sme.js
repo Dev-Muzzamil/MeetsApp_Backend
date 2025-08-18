@@ -1,6 +1,12 @@
+
 import express from 'express';
-import { registerEvent } from '../controllers/smeController.js';
+import { registerEvent, getAvailableEvents } from '../controllers/smeController.js';
+import { protect, authorizeSME } from '../middleware/smeAuthMiddleware.js';
 
 const router = express.Router();
 
-router.post('/register/:eventid', registerEvent);
+// Protect SME event registration and available events endpoints
+router.post('/register/:eventid', protect, authorizeSME, registerEvent);
+router.get('/events/available', protect, authorizeSME, getAvailableEvents);
+
+export default router;

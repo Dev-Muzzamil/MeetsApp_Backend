@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import Institution from '../models/Institution.js';
 import Sme from '../models/Sme.js';
 
@@ -46,9 +46,17 @@ export const instituteRegister = async (req, res) => {
 }
 
 export const smeRegister = async (req, res) => {
-  const { name, email, password, expertise, qualifications, institute } = req.body;
+  let { name, email, password, expertise, qualifications, institute } = req.body;
 
-  if (!name || !email || !password || !expertise || !qualifications) {
+  // Accept comma-separated strings or arrays from frontend
+  if (typeof expertise === 'string') {
+    expertise = expertise.split(',').map(e => e.trim()).filter(Boolean);
+  }
+  if (typeof qualifications === 'string') {
+    qualifications = qualifications.split(',').map(q => q.trim()).filter(Boolean);
+  }
+
+  if (!name || !email || !password || !Array.isArray(expertise) || expertise.length === 0 || !Array.isArray(qualifications) || qualifications.length === 0) {
     return res.status(400).json({ message: 'Please fill all required fields' });
   }
 
@@ -73,6 +81,8 @@ export const smeRegister = async (req, res) => {
       _id: sme._id,
       name: sme.name,
       email: sme.email,
+      expertise: sme.expertise,
+      qualifications: sme.qualifications,
       token: generateToken(sme._id, 'sme')
     });
   } catch (error) {
@@ -121,6 +131,8 @@ export const smeLogin = async (req, res) => {
       _id: sme._id,
       name: sme.name,
       email: sme.email,
+      expertise: sme.expertise,
+      qualifications: sme.qualifications,
       token: generateToken(sme._id, 'sme')
     });
   } catch (error) {

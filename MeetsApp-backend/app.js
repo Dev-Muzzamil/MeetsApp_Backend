@@ -13,7 +13,7 @@ const allowedOrigins = [
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/institution', require('./routes/institution'));
+app.use('/api/institutions', require('./routes/institution'));
 
 app.get('/', (req, res) => res.send('Meeting Place Backend Running'));
 
