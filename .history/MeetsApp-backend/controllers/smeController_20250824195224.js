@@ -6,9 +6,8 @@ export const getAvailableEvents = async (req, res) => {
   try {
     const events = await Event.find({ sme: null, status: 'pending' })
       .populate('institution', 'name location type')
-      .populate('topic', 'name') // Optional: include topic info
       .sort({ date: 1 });
-
+    
     res.status(200).json({
       success: true,
       data: events
@@ -22,46 +21,12 @@ export const getAvailableEvents = async (req, res) => {
   }
 };
 
-// Get relevant events for an SME based on their expertise (Topics)
-export const getRelevantEvents = async (req, res) => {
-  try {
-    const { smeId } = req.params;
-
-    if (!smeId) {
-      return res.status(400).json({ success: false, message: 'smeId is required' });
-    }
-
-    // Fetch SME with expertise populated to get Topic IDs
-    const sme = await Sme.findById(smeId).populate('expertise', '_id name');
-    if (!sme) {
-      return res.status(404).json({ success: false, message: 'SME not found' });
-    }
-
-    const expertiseIds = (sme.expertise || []).map((t) => t._id);
-
-    // Find events where topic is one of SME's expertise and not yet assigned
-    const events = await Event.find({
-      topic: { $in: expertiseIds },
-      sme: null,
-      status: 'pending'
-    })
-      .populate('institution', 'name location type')
-      .populate('topic', 'name')
-      .sort({ date: 1 });
-
-    return res.status(200).json({ success: true, data: events });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ success: false, error: error.message || 'Server Error' });
-  }
-};
-
-// Register an SME for an event
 export const registerEvent = async (req, res) => {
   const { eventid } = req.params;
   const { smeId } = req.body;
 
   try {
+    // Validate smeId
     if (!smeId) {
       return res.status(400).json({
         success: false,
@@ -69,8 +34,8 @@ export const registerEvent = async (req, res) => {
       });
     }
 
-    // ✅ Populate expertise when fetching SME
-    const sme = await Sme.findById(smeId).populate('expertise', 'name');
+    // Find the SME
+    const sme = await Sme.findById(smeId);
     if (!sme) {
       return res.status(404).json({
         success: false,
@@ -78,10 +43,8 @@ export const registerEvent = async (req, res) => {
       });
     }
 
-    const event = await Event.findById(eventid)
-      .populate('institution', 'name email')
-      .populate('topic', 'name'); // Optional
-
+    // Find the event by ID
+    const event = await Event.findById(eventid).populate('institution', 'name email');
     if (!event) {
       return res.status(404).json({
         success: false,
@@ -89,6 +52,7 @@ export const registerEvent = async (req, res) => {
       });
     }
 
+    // Check if the SME is already registered for the event
     if (event.sme) {
       return res.status(400).json({
         success: false,
@@ -96,8 +60,7 @@ export const registerEvent = async (req, res) => {
       });
     }
 
-    // ✅ You can add optional logic to verify SME has matching expertise here
-
+    // Update the event with the SME's ID
     event.sme = smeId;
     event.status = 'confirmed';
     await event.save();
@@ -106,8 +69,8 @@ export const registerEvent = async (req, res) => {
       success: true,
       message: 'SME registered successfully for the event',
       data: {
-        event,
-        sme
+        event: event,
+        sme: sme
       }
     });
   } catch (error) {

@@ -16,11 +16,3 @@ export const getEvent = (institutionId, eventId) =>
 // (If you have an update route, add it)
 export const updateEvent = (institutionId, eventId, data) =>
   axios.put(`${BASE_URL}/api/institution/${institutionId}/events/${eventId}`, data);
-
-// Get relevant events for an SME: requires Bearer token and SME id
-export const getRelevantEventsForSme = (smeId, token) =>
-  axios.get(`${BASE_URL}/sme/${smeId}/relevant/events`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });

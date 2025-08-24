@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ActivityIndicator, TouchableOpacity, StatusBar } from "react-native";
 import { getAllInstitutions } from "../api/institution";
-import { getAllEvents, getRelevantEventsForSme } from "../api/events";
+import { getAllEvents } from "../api/events";
 import { SafeAreaView } from "react-native-safe-area-context";
 import InstitutionList from "./institutionList";
 import EventsList from "./eventsList";
 
-export default function Dashboard({ onBackToHome, smeId, authToken }) {
+export default function Dashboard({ onBackToHome }) {
   const [institutions, setInstitutions] = useState([]);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,24 +37,10 @@ export default function Dashboard({ onBackToHome, smeId, authToken }) {
     }
   };
 
-  // Load relevant events for SME on demand (e.g., on a separate button)
-  const handleLoadRelevantEvents = async () => {
-    if (!smeId || !authToken) {
-      console.warn('Missing SME id or auth token');
-      return;
-    }
-    setEventsLoading(true);
+  const handleBackToInstitutions = () => {
+    setCurrentView('institutions');
     setSelectedInstitution(null);
-    try {
-      const res = await getRelevantEventsForSme(smeId, authToken);
-      setEvents(res.data?.data || []);
-      setCurrentView('events');
-    } catch (e) {
-      console.error('Error fetching relevant events for SME:', e);
-      setEvents([]);
-    } finally {
-      setEventsLoading(false);
-    }
+    setEvents([]);
   };
 
   return (
@@ -71,7 +57,7 @@ export default function Dashboard({ onBackToHome, smeId, authToken }) {
           <Text className="text-blue-600 text-base font-medium">Back to Home</Text>
         </TouchableOpacity>
         
-        <View className="items-center mb-4">
+        <View className="items-center mb-8">
           <View className="w-16 h-16 bg-blue-600 rounded-full items-center justify-center mb-4 shadow-lg">
             <Text className="text-2xl text-white font-bold">
               {currentView === 'institutions' ? '🏫' : '📅'}
@@ -83,15 +69,9 @@ export default function Dashboard({ onBackToHome, smeId, authToken }) {
           <Text className="text-gray-600 text-center text-base">
             {currentView === 'institutions' 
               ? 'Discover educational institutions and their events'
-              : 'Relevant events for you'}
+              : `Events from ${selectedInstitution?.name}`
+            }
           </Text>
-        </View>
-
-        {/* Button to fetch relevant SME events */}
-        <View className="flex-row justify-center mb-4">
-          <TouchableOpacity onPress={handleLoadRelevantEvents} className="bg-blue-600 px-4 py-3 rounded-xl shadow">
-            <Text className="text-white font-semibold">Load My Relevant Events</Text>
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -127,7 +107,7 @@ export default function Dashboard({ onBackToHome, smeId, authToken }) {
             ) : (
               <EventsList
                 events={events}
-                onBack={() => setCurrentView('institutions')}
+                onBack={handleBackToInstitutions}
                 institutionName={selectedInstitution?.name}
               />
             )}

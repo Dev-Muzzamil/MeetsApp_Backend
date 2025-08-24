@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 
 const eventSchema = new mongoose.Schema({
   title: String,
-  // Reference to Topics collection
-  topic: { type: mongoose.Schema.Types.ObjectId, ref: 'Topics' },
+  topic: String,
   description: String,
   date: String,
   time: String,

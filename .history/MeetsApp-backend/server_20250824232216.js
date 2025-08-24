@@ -6,7 +6,6 @@ import InstitutionRoutes from './routes/institution.js';
 import authRoutes from './routes/auth.js';
 import smeRoutes from './routes/sme.js';
 import feedbackRoutes from './routes/feedback.js';
-import topicRoutes from './routes/topic.js';
 
 
 connectDB();
@@ -59,7 +58,7 @@ app.use('/sme', smeRoutes);
 app.use('/institutions', InstitutionRoutes);
 app.use('/feedback', feedbackRoutes);
 app.use('/events',)
-app.use('/topics', topicRoutes);
+app.use('/api/topics', topicRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Meeting Place Backend Running' });

@@ -59,7 +59,7 @@ app.use('/sme', smeRoutes);
 app.use('/institutions', InstitutionRoutes);
 app.use('/feedback', feedbackRoutes);
 app.use('/events',)
-app.use('/topics', topicRoutes);
+app.use('/api/topics', topicRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Meeting Place Backend Running' });

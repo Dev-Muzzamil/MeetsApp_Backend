@@ -22,40 +22,6 @@ export const getAvailableEvents = async (req, res) => {
   }
 };
 
-// Get relevant events for an SME based on their expertise (Topics)
-export const getRelevantEvents = async (req, res) => {
-  try {
-    const { smeId } = req.params;
-
-    if (!smeId) {
-      return res.status(400).json({ success: false, message: 'smeId is required' });
-    }
-
-    // Fetch SME with expertise populated to get Topic IDs
-    const sme = await Sme.findById(smeId).populate('expertise', '_id name');
-    if (!sme) {
-      return res.status(404).json({ success: false, message: 'SME not found' });
-    }
-
-    const expertiseIds = (sme.expertise || []).map((t) => t._id);
-
-    // Find events where topic is one of SME's expertise and not yet assigned
-    const events = await Event.find({
-      topic: { $in: expertiseIds },
-      sme: null,
-      status: 'pending'
-    })
-      .populate('institution', 'name location type')
-      .populate('topic', 'name')
-      .sort({ date: 1 });
-
-    return res.status(200).json({ success: true, data: events });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ success: false, error: error.message || 'Server Error' });
-  }
-};
-
 // Register an SME for an event
 export const registerEvent = async (req, res) => {
   const { eventid } = req.params;
