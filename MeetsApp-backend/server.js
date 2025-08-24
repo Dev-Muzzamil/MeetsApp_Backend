@@ -13,8 +13,14 @@ connectDB();
 const app = express();
 
 // Middleware
+
 app.use(cors({
-  origin: '*',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    // Optionally, restrict web origins here if needed
+    return callback(null, true);
+  },
   credentials: true
 }));
 
