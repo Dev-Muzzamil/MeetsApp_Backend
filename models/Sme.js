@@ -5,9 +5,11 @@ const smeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  expertise: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'Topics', required: true }
-  ],
+  expertise: {
+    type: [String],
+    required: true,
+    validate: v => Array.isArray(v) && v.length > 0
+  },
   qualifications: {
     type: [String],
     required: true,

@@ -33,7 +33,7 @@ export const getInstitutionEventDetail = async (req, res) => {
     const event = await Event.findOne({ _id: req.params.eventId, institution: req.params.id })
       .populate({
         path: 'institution',
-        select: 'name email location type description coordinates',
+        select: 'name email location type description',
       });
     if (!event) return res.status(404).json({ message: 'Event not found' });
     res.json(event);

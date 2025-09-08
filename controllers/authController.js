@@ -10,9 +10,9 @@ const generateToken = (id, role) => {
 };
 
 export const instituteRegister = async (req, res) => {
-  const { name, email, password, location, type, description, coordinates } = req.body;
+  const { name, email, password, location, type, description } = req.body;
 
-  if (!name || !email || !password || !coordinates) {
+  if (!name || !email || !password) {
     return res.status(400).json({ message: 'Please fill all required fields' });
   }
 
@@ -28,8 +28,7 @@ export const instituteRegister = async (req, res) => {
       password: bcrypt.hashSync(password, 10),
       location,
       type,
-      description,
-      coordinates
+      description
     });
 
     await institution.save();

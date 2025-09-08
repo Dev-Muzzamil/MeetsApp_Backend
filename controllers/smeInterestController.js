@@ -23,10 +23,16 @@ export const createInterest = async (req, res) => {
     }
 
     // Check if SME has required expertise
+    // TODO: Temporarily commented out expertise validation - will implement later
+    /*
     const sme = await Sme.findById(smeId);
     if (!sme.expertise.includes(event.topic)) {
       return res.status(400).json({ message: 'You do not have the required expertise for this event' });
     }
+    */
+
+    // Get SME data for email
+    const sme = await Sme.findById(smeId);
 
     // Create interest
     const interest = new SMEInterest({
@@ -37,23 +43,24 @@ export const createInterest = async (req, res) => {
     });
 
     await interest.save();
+    console.log('Interest saved successfully:', interest._id);
 
-    // Send email to institution
+    // Send email to institution using proper template
     const institution = await Institutions.findById(event.institution);
+    console.log('Institution found:', institution ? institution.name : 'Not found');
+    console.log('Institution email:', institution?.email);
+
     if (institution && institution.email) {
-      await sendEmail({
+      const emailTemplate = emailTemplates.smeInterest(event, sme, institution);
+      console.log('Sending email to:', institution.email);
+      const emailResult = await sendEmail({
         to: institution.email,
-        subject: `New SME Interest: ${event.title}`,
-        html: `
-          <h2>New SME Interest for Your Event</h2>
-          <p><strong>Event:</strong> ${event.title}</p>
-          <p><strong>SME:</strong> ${sme.name}</p>
-          <p><strong>Expertise:</strong> ${sme.expertise.join(', ')}</p>
-          ${message ? `<p><strong>Message:</strong> ${message}</p>` : ''}
-          <p>Please review this application in your dashboard.</p>
-          <a href="${process.env.FRONTEND_URL}/dashboard">Review Applications</a>
-        `
+        subject: emailTemplate.subject,
+        html: emailTemplate.html
       });
+      console.log('Email send result:', emailResult ? 'Success' : 'Failed');
+    } else {
+      console.log('No institution email found - skipping email');
     }
 
     res.status(201).json({
@@ -97,11 +104,20 @@ export const getInstitutionInterests = async (req, res) => {
 export const getSMEInterests = async (req, res) => {
   try {
     const smeId = req.user.id;
+    console.log('Fetching interests for SME:', smeId);
 
     const interests = await SMEInterest.find({ sme: smeId })
       .populate('event', 'title topic date time location status')
       .populate('institution', 'name email')
       .sort({ appliedAt: -1 });
+
+    console.log('Found interests:', interests.length);
+    console.log('Interests data:', interests.map(i => ({
+      id: i._id,
+      event: i.event?.title,
+      status: i.status,
+      appliedAt: i.appliedAt
+    })));
 
     res.json(interests);
   } catch (error) {
@@ -119,7 +135,7 @@ export const reviewInterest = async (req, res) => {
 
     const interest = await SMEInterest.findById(interestId)
       .populate('sme', 'name email')
-      .populate('event', 'title');
+      .populate('event', 'title topic date time location');
 
     if (!interest) {
       return res.status(404).json({ message: 'Interest not found' });

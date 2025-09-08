@@ -4,17 +4,33 @@ import Sme from '../models/Sme.js';
 // Get all available events (not yet assigned to SME)
 export const getAvailableEvents = async (req, res) => {
   try {
-    const events = await Event.find({ sme: null, status: 'pending' })
+    // Get all events that are not completed, regardless of SME assignment
+    const events = await Event.find({
+      status: { $in: ['pending', 'confirmed'] },
+      $or: [
+        { sme: null },
+        { sme: { $exists: false } }
+      ]
+    })
       .populate('institution', 'name location type')
-      .populate('topic', 'name')
-      .sort({ date: 1 });
+      .sort({ createdAt: -1, date: -1 }); // Sort by creation date (newest first), then by event date
+
+    console.log('Found events:', events.length);
+    console.log('Sample events:', events.map(e => ({
+      title: e.title,
+      topic: e.topic,
+      status: e.status,
+      sme: e.sme,
+      date: e.date,
+      createdAt: e.createdAt
+    })));
 
     res.status(200).json({
       success: true,
       data: events
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching available events:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Server Error'
